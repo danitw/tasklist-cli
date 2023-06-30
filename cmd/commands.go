@@ -3,12 +3,14 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-type Task struct {
+type Task struct { // TODO: add dates after
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
@@ -34,14 +36,24 @@ var addTask = &cobra.Command{
 		}
 
 		taskFile := tasklistDir + "/tasks.json"
-		file, err := os.OpenFile(taskFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		file, err := os.OpenFile(taskFile, os.O_RDWR|os.O_CREATE, 0644)
 		if err != nil {
 			fmt.Println("Failed to open tasks file:", err)
 			return
 		}
 		defer file.Close()
 
+		decoder := json.NewDecoder(file)
+
 		var taskList []Task
+
+		decoder.Decode(&taskList)
+
+		if err := decoder.Decode(&taskList); err != nil && err != io.EOF {
+			fmt.Println("Failed to Unmarshal/Decode json file")
+			panic(err)
+		}
+
 		for _, task := range tasks {
 			taskObject := Task{
 				Name: task,
@@ -56,7 +68,7 @@ var addTask = &cobra.Command{
 			return
 		}
 
-		if _, err := file.Write(taskJSON); err != nil {
+		if err := ioutil.WriteFile(taskFile,taskJSON , 0644); err != nil {
 			fmt.Println("Failed to write tasks to file:", err)
 			return
 		}
