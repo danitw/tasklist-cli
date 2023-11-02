@@ -1,4 +1,4 @@
-module tasklist-cli
+module sunflower
 
 go 1.20
 
