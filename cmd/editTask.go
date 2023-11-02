@@ -8,9 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var deleteTask = &cobra.Command{
-	Use:   "del",
-	Short: "Delete task command",
+var editTask = &cobra.Command{
+	Use:   "edit",
+	Short: "Edit task command",
 	Run: func(cmd *cobra.Command, args []string) {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
@@ -33,7 +33,6 @@ var deleteTask = &cobra.Command{
 			fmt.Println("Failed to open tasks file:", err)
 			return
 		}
-		//defer file.Close()
 
 		var tasks []Task
 

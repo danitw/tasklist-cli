@@ -6,5 +6,5 @@ type Task struct { // TODO: add dates after
 }
 
 func init() {
-	rootCmd.AddCommand(addTask, listTask, deleteTask)
+	rootCmd.AddCommand(addTask, listTask, editTask, deleteTask)
 }
